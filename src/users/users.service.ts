@@ -25,8 +25,10 @@ export class UsersService {
     if (user) throw new BadRequestException('This email is already in use');
 
     const password = await hashPassword(createUserDto.password);
-
-    return await this.usersRepository.create({ ...createUserDto, password });
+    return await this.usersRepository.save({
+      ...createUserDto,
+      password,
+    });
   }
 
   async findAll(): Promise<User[]> {
@@ -34,7 +36,7 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    const user = this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { id },
     });
 
@@ -44,7 +46,7 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    const user = this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { email },
     });
 
