@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Subject } from '../../subjects/entities/subject.entity';
-import { StudentToTask } from './student-to-task';
-import { StudentToExam } from './student-to-exam';
 import { Course } from '../../courses/entities/course.entity';
+import { StudentToTask } from '../../student-to-task/entities/student-to-task.entity';
+import { StudentToExam } from '../../student-to-exam/entities/student-to-exam.entity';
 
 @Entity('students')
 export class Student {

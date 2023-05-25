@@ -3,13 +3,17 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { Exam } from '../exams/entities/exam.entity';
+import { Task } from '../tasks/entities/task.entity';
+import { Marking } from '../markings/entities/marking.entity';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private studentsRepository: Repository<Student>,
+    private dataSource: DataSource,
   ) {}
 
   async create(createStudentDto: CreateStudentDto): Promise<Student> {
@@ -17,7 +21,26 @@ export class StudentsService {
   }
 
   async findAll(): Promise<Student[]> {
-    return await this.studentsRepository.find();
+    // return await this.studentsRepository.find();
+
+    const students = await this.dataSource
+      .getRepository(Student)
+      .createQueryBuilder('student')
+      .leftJoin('student.studentToExam', 'exams')
+      .addSelect(['exams.examId', 'exams.marking'])
+      .leftJoinAndMapOne('exams.examId', Exam, 'exam', 'exam.id = exams.examId')
+      .leftJoin('student.studentToTask', 'tasks')
+      .addSelect(['tasks.taskId', 'tasks.markingId'])
+      .leftJoinAndMapOne('tasks.taskId', Task, 'task', 'task.id = tasks.taskId')
+      .leftJoinAndMapOne(
+        'tasks.markingId',
+        Marking,
+        'marking',
+        'marking.id = tasks.markingId',
+      )
+      .getMany();
+
+    return students;
   }
 
   async findOne(id: number): Promise<Student> {

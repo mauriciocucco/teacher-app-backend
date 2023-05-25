@@ -5,8 +5,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { StudentToExam } from '../../students/entities/student-to-exam';
 import { Subject } from '../../subjects/entities/subject.entity';
+import { StudentToExam } from '../../student-to-exam/entities/student-to-exam.entity';
 
 @Entity('exams')
 export class Exam {

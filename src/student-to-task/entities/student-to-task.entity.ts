@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Student } from './student.entity';
 import { Task } from '../../tasks/entities/task.entity';
 import { Marking } from '../../markings/entities/marking.entity';
+import { Student } from '../../students/entities/student.entity';
 
 @Entity()
 export class StudentToTask {
@@ -13,6 +13,9 @@ export class StudentToTask {
 
   @Column()
   public taskId: number;
+
+  @Column()
+  public markingId: number;
 
   @ManyToOne(() => Marking, (marking) => marking.studentToTask)
   public marking: Marking;

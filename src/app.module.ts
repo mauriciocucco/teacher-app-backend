@@ -14,6 +14,8 @@ import { SubjectsModule } from './subjects/subjects.module';
 import { TasksModule } from './tasks/tasks.module';
 import { MarkingsModule } from './markings/markings.module';
 import { ExamsModule } from './exams/exams.module';
+import { StudentToTaskModule } from './student-to-task/student-to-task.module';
+import { StudentToExamModule } from './student-to-exam/student-to-exam.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { ExamsModule } from './exams/exams.module';
     TasksModule,
     MarkingsModule,
     ExamsModule,
+    StudentToTaskModule,
+    StudentToExamModule,
   ],
   controllers: [AppController],
   providers: [AppService],

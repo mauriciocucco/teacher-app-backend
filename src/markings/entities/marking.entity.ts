@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { StudentToTask } from '../../students/entities/student-to-task';
+import { StudentToTask } from '../../student-to-task/entities/student-to-task.entity';
 
 @Entity('markings')
 export class Marking {

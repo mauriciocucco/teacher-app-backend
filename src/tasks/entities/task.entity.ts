@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Subject } from '../../subjects/entities/subject.entity';
-import { StudentToTask } from '../../students/entities/student-to-task';
+import { StudentToTask } from '../../student-to-task/entities/student-to-task.entity';
 
 @Entity('tasks')
 export class Task {
