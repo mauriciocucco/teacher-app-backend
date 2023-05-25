@@ -8,6 +8,12 @@ import { AuthModule } from './auth/auth.module';
 import appConfig from './config/app.config';
 import { DataSourceOptions } from 'typeorm';
 import { UsersModule } from './users/users.module';
+import { StudentsModule } from './students/students.module';
+import { CoursesModule } from './courses/courses.module';
+import { SubjectsModule } from './subjects/subjects.module';
+import { TasksModule } from './tasks/tasks.module';
+import { MarkingsModule } from './markings/markings.module';
+import { ExamsModule } from './exams/exams.module';
 
 @Module({
   imports: [
@@ -24,6 +30,12 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
+    StudentsModule,
+    CoursesModule,
+    SubjectsModule,
+    TasksModule,
+    MarkingsModule,
+    ExamsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

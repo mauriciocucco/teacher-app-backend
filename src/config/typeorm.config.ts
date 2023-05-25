@@ -1,22 +1,15 @@
-import { DataSourceOptions } from 'typeorm';
-import { User } from '../users/entities/user.entity';
-
-const typeOrmConfig = (): DataSourceOptions => ({
-  type: 'mysql',
-  url: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: true,
-  },
-  // host: process.env.DB_HOST || 'localhost',
-  // port: +process.env.DB_PORT || 3306,
-  // database: process.env.DB_NAME || '',
+const typeOrmConfig = () => ({
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: +process.env.DB_PORT || 3306,
+  database: process.env.DB_NAME || '',
   username: process.env.DB_USER || '',
   password: process.env.DB_PASSWORD || '',
-  entities: [User],
+  entities: [__dirname + '/../**/entities/*.entity.{ts,js}'],
   /* Note : it is unsafe to use synchronize: true for schema synchronization
     on production once you get data in your database. */
-  synchronize: Boolean(process.env.DB_SYNCHRONIZE) || false,
-  // autoLoadEntities: true,
+  synchronize: process.env.DB_SYNCHRONIZE || false,
+  autoLoadEntities: true,
   migrationsTableName: 'migration',
   // migrations: [
   //   process.env.NODE_ENV === 'production'
@@ -24,10 +17,10 @@ const typeOrmConfig = (): DataSourceOptions => ({
   //     : __dirname + 'dist/migrations/*.js',
   // ], // normal approach
   migrations: [__dirname + '/../migrations/*.{ts,js}'], // with 'migrations/*' within exclude property in tsconfig.build.json
-  migrationsRun: Boolean(process.env.MIGRATIONS_RUN) || false,
-  // cli: {
-  //   migrationsDir: 'src/migrations',
-  // },
+  migrationsRun: process.env.MIGRATIONS_RUN || false,
+  cli: {
+    migrationsDir: 'src/migrations',
+  },
 });
 
 export default typeOrmConfig;

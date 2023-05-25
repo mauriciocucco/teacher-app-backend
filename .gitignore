@@ -42,3 +42,6 @@ lerna-debug.log*
 
 # Auth
 src/auth/constants/auth.ts
+
+# Docker
+docker-compose.yml
