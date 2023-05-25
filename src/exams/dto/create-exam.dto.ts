@@ -1,12 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class CreateExamDto {
   @ApiProperty({ description: 'The exam name' })
   @IsString()
   readonly name: string;
 
-  @ApiProperty({ description: 'The exam date' })
+  @ApiProperty({ description: 'The exam description' })
   @IsString()
-  readonly date: string;
+  @IsOptional()
+  readonly description: string;
+
+  @ApiProperty({ description: 'The exam date' })
+  @IsDateString()
+  readonly date: Date;
 }

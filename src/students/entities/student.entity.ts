@@ -3,12 +3,14 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Subject } from '../../subjects/entities/subject.entity';
 import { StudentToTask } from './student-to-task';
 import { StudentToExam } from './student-to-exam';
+import { Course } from '../../courses/entities/course.entity';
 
 @Entity('students')
 export class Student {
@@ -30,4 +32,7 @@ export class Student {
 
   @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.student)
   public studentToExam: StudentToExam[];
+
+  @ManyToOne(() => Course, (course) => course.students)
+  public course: Course;
 }

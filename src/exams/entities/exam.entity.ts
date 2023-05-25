@@ -16,8 +16,11 @@ export class Exam {
   @Column()
   name: string;
 
-  @Column()
-  date: string;
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ type: 'timestamp' })
+  date: Date;
 
   @ManyToOne(() => Subject, (subject) => subject.exams)
   subject: Subject;

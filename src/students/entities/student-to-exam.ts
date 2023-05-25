@@ -13,7 +13,7 @@ export class StudentToExam {
   @Column()
   public examId: number;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   public marking: number;
 
   @ManyToOne(() => Student, (student) => student.studentToExam)

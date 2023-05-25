@@ -9,6 +9,9 @@ export class Marking {
   @Column()
   name: string;
 
+  @Column()
+  description: string;
+
   @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.marking)
   studentToTask: StudentToTask[];
 }

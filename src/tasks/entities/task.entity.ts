@@ -16,14 +16,11 @@ export class Task {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
-  start_date: string;
-
-  @Column()
-  delivery_date: string;
+  @Column({ type: 'timestamp' })
+  date: Date;
 
   @ManyToOne(() => Subject, (subject) => subject.tasks)
   subject: Subject;
