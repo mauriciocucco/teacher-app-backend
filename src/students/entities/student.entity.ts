@@ -23,6 +23,9 @@ export class Student {
   @Column()
   lastname: string;
 
+  @Column()
+  courseId: number;
+
   @ManyToMany(() => Subject, (subject) => subject.students)
   @JoinTable()
   subjects: Subject[];

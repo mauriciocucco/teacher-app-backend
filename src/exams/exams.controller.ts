@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { FindExamsFiltersDto } from './dto/find-exams-filters.dto';
 
 @Controller('exams')
 export class ExamsController {
@@ -21,8 +23,8 @@ export class ExamsController {
   }
 
   @Get()
-  findAll() {
-    return this.examsService.findAll();
+  findAll(@Query() filters: FindExamsFiltersDto) {
+    return this.examsService.findAll(filters);
   }
 
   @Get(':id')

@@ -14,6 +14,9 @@ export class StudentToTask {
   @Column()
   public taskId: number;
 
+  @Column({ nullable: true })
+  public observation: string;
+
   @Column()
   public markingId: number;
 

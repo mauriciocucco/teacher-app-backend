@@ -9,4 +9,8 @@ export class CreateStudentDto {
   @ApiProperty({ description: 'The lastname of the student' })
   @IsString()
   readonly lastname: string;
+
+  @ApiProperty({ description: 'The course of the student' })
+  @IsString()
+  readonly courseId: number;
 }

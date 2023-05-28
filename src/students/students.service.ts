@@ -4,9 +4,8 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { DataSource, Repository } from 'typeorm';
-import { Exam } from '../exams/entities/exam.entity';
-import { Task } from '../tasks/entities/task.entity';
-import { Marking } from '../markings/entities/marking.entity';
+import { FindStudentsFiltersDto } from './dto/find-students-filters.dto';
+import { Filters, cleanFilters } from '../utils/clean-filters';
 
 @Injectable()
 export class StudentsService {
@@ -20,27 +19,34 @@ export class StudentsService {
     return await this.studentsRepository.save(createStudentDto);
   }
 
-  async findAll(): Promise<Student[]> {
-    // return await this.studentsRepository.find();
+  async findAll(filters: FindStudentsFiltersDto): Promise<Student[]> {
+    const cleanedFilters = cleanFilters(
+      filters as unknown as Filters,
+    ) as unknown as FindStudentsFiltersDto;
 
     const students = await this.dataSource
       .getRepository(Student)
       .createQueryBuilder('student')
       .leftJoin('student.studentToExam', 'exams')
-      .addSelect(['exams.examId', 'exams.marking'])
-      .leftJoinAndMapOne('exams.examId', Exam, 'exam', 'exam.id = exams.examId')
+      .addSelect(['exams.examId', 'exams.marking', 'exams.observation'])
+      // .leftJoinAndMapOne('exams.examId', Exam, 'exam', 'exam.id = exams.examId')
       .leftJoin('student.studentToTask', 'tasks')
-      .addSelect(['tasks.taskId', 'tasks.markingId'])
-      .leftJoinAndMapOne('tasks.taskId', Task, 'task', 'task.id = tasks.taskId')
-      .leftJoinAndMapOne(
-        'tasks.markingId',
-        Marking,
-        'marking',
-        'marking.id = tasks.markingId',
-      )
-      .getMany();
+      .addSelect(['tasks.taskId', 'tasks.markingId', 'tasks.observation']);
+    // .leftJoinAndMapOne('tasks.taskId', Task, 'task', 'task.id = tasks.taskId')
+    // .leftJoinAndMapOne(
+    //   'tasks.markingId',
+    //   Marking,
+    //   'marking',
+    //   'marking.id = tasks.markingId',
+    // )
 
-    return students;
+    if (cleanedFilters.courseId) {
+      students.andWhere('student.courseId = :courseId', {
+        courseId: cleanedFilters.courseId,
+      });
+    }
+
+    return students.getMany();
   }
 
   async findOne(id: number): Promise<Student> {

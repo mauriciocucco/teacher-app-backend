@@ -4,6 +4,9 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm';
+import { FindTasksFiltersDto } from './dto/find-tasks-filters.dto';
+import { Filters, cleanFilters } from '../utils/clean-filters';
+import { addDateRange } from '../utils/date-range-filter';
 
 @Injectable()
 export class TasksService {
@@ -16,8 +19,13 @@ export class TasksService {
     return await this.tasksRepository.save(createTaskDto);
   }
 
-  async findAll(): Promise<Task[]> {
-    return await this.tasksRepository.find();
+  async findAll(filters: FindTasksFiltersDto): Promise<Task[]> {
+    const cleanedFilters = cleanFilters(filters as unknown as Filters);
+    const filterWithDate = addDateRange(cleanedFilters);
+
+    return await this.tasksRepository.find({
+      where: filterWithDate,
+    });
   }
 
   async findOne(id: number): Promise<Task> {

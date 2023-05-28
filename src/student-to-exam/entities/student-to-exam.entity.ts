@@ -16,6 +16,9 @@ export class StudentToExam {
   @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
   public marking: number;
 
+  @Column({ nullable: true })
+  public observation: string;
+
   @ManyToOne(() => Student, (student) => student.studentToExam)
   public student: Student;
 

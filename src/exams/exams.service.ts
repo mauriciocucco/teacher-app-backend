@@ -2,8 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Exam } from './entities/exam.entity';
+import { FindExamsFiltersDto } from './dto/find-exams-filters.dto';
+import { Filters, cleanFilters } from '../utils/clean-filters';
+import { addDateRange } from '../utils/date-range-filter';
 
 @Injectable()
 export class ExamsService {
@@ -16,8 +19,13 @@ export class ExamsService {
     return await this.examsRepository.save(createExamDto);
   }
 
-  async findAll(): Promise<Exam[]> {
-    return await this.examsRepository.find();
+  async findAll(filters: FindExamsFiltersDto): Promise<Exam[]> {
+    const cleanedFilters = cleanFilters(filters as unknown as Filters);
+    const filterWithDate = addDateRange(cleanedFilters);
+
+    return await this.examsRepository.find({
+      where: filterWithDate,
+    });
   }
 
   async findOne(id: number): Promise<Exam> {
