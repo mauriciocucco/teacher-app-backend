@@ -5,7 +5,8 @@ import { Between } from 'typeorm';
 export const addDateRange = (
   cleanedFilters: FindExamsFiltersDto | FindTasksFiltersDto,
 ) => {
-  if (!cleanedFilters.startDate && !cleanedFilters.endDate) return;
+  if (!cleanedFilters.startDate && !cleanedFilters.endDate)
+    return cleanedFilters;
 
   const deepCopy = JSON.parse(JSON.stringify(cleanedFilters));
   const { startDate, endDate } = deepCopy;
