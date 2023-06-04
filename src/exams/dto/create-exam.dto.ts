@@ -13,7 +13,7 @@ export class CreateExamDto {
 
   @ApiProperty({ description: 'The exam date' })
   @IsDateString()
-  readonly date: Date;
+  readonly date: string;
 
   @ApiProperty({ description: 'The task subject' })
   @IsNumber()

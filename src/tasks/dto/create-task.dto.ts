@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { CreateStudentToTaskDto } from '../../student-to-task/dto/create-student-to-task.dto';
+import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
   @ApiProperty({ description: 'The task name' })
@@ -13,7 +22,7 @@ export class CreateTaskDto {
 
   @ApiProperty({ description: 'The task date' })
   @IsDateString()
-  readonly date: Date;
+  readonly date: string;
 
   @ApiProperty({ description: 'The task subject' })
   @IsNumber()
@@ -22,4 +31,10 @@ export class CreateTaskDto {
   @ApiProperty({ description: 'The task course' })
   @IsNumber()
   readonly courseId: number;
+
+  @ApiProperty({ description: 'The relation with students' })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateStudentToTaskDto)
+  readonly studentToTask: CreateStudentToTaskDto[];
 }

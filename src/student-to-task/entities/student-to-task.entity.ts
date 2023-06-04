@@ -1,9 +1,16 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { Task } from '../../tasks/entities/task.entity';
 import { Marking } from '../../markings/entities/marking.entity';
 import { Student } from '../../students/entities/student.entity';
 
 @Entity()
+@Unique(['studentId', 'taskId'])
 export class StudentToTask {
   @PrimaryGeneratedColumn()
   public studentToTaskId: number;
