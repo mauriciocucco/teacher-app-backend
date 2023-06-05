@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -38,15 +38,42 @@ export class ExamsService {
     return exam;
   }
 
-  async update(id: number, updateExamDto: UpdateExamDto): Promise<Exam> {
-    const exam = await this.examsRepository.preload({
-      id,
-      ...updateExamDto,
-    });
+  async update(id: number, updateRequest: UpdateExamDto): Promise<Exam> {
+    try {
+      const { studentId, marking, observation } =
+        updateRequest.studentToExam ?? {};
+      const exam = await this.examsRepository.findOne({
+        where: { id },
+        relations: ['studentToExam'],
+      });
 
-    if (!exam) throw new NotFoundException('Exam not found');
+      if (!exam) throw new NotFoundException('Exam not found');
 
-    return await this.examsRepository.save(exam);
+      if (studentId) {
+        for (const relation of exam.studentToExam) {
+          if (relation.studentId === updateRequest.studentToExam?.studentId) {
+            relation.marking = marking ?? relation.marking;
+            relation.observation = observation ?? relation.observation;
+            break;
+          }
+        }
+      }
+
+      const updatedExam = {
+        ...exam,
+        ...updateRequest,
+        studentToExam: [...exam.studentToExam],
+      };
+
+      return await this.examsRepository.save(updatedExam);
+    } catch (error) {
+      console.error(error);
+
+      throw new HttpException(
+        error.message || 'Internal Server Error',
+        error.status || 500,
+      );
+    }
   }
 
   async remove(id: number): Promise<Exam> {

@@ -32,7 +32,9 @@ export class Exam {
   @ManyToOne(() => Subject, (subject) => subject.exams)
   subject: Subject;
 
-  @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.exam)
+  @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.exam, {
+    cascade: true,
+  })
   public studentToExam: StudentToExam[];
 
   @ManyToOne(() => Course, (course) => course.exams)

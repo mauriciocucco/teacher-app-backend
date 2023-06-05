@@ -41,7 +41,8 @@ export class TasksService {
 
   async update(id: number, updateRequest: UpdateTaskDto): Promise<Task> {
     try {
-      const { studentId, markingId, observation } = updateRequest.studentToTask;
+      const { studentId, markingId, observation } =
+        updateRequest.studentToTask ?? {};
       const task = await this.tasksRepository.findOne({
         where: { id },
         relations: ['studentToTask'],

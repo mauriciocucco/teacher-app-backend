@@ -7,7 +7,7 @@ import { UpdateStudentToTaskDto } from '../../student-to-task/dto/update-student
 export class UpdateTaskDto extends PartialType(
   OmitType(CreateTaskDto, ['studentToTask']),
 ) {
-  @ApiProperty({ description: 'The task course' })
+  @ApiProperty({ description: 'The relationship with a student' })
   @ValidateNested()
   @Type(() => UpdateStudentToTaskDto)
   readonly studentToTask: UpdateStudentToTaskDto;

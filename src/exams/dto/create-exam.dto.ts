@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { CreateStudentToExamDto } from '../../student-to-exam/dto/create-student-to-exam.dto';
 
 export class CreateExamDto {
   @ApiProperty({ description: 'The exam name' })
@@ -22,4 +31,10 @@ export class CreateExamDto {
   @ApiProperty({ description: 'The task course' })
   @IsNumber()
   readonly courseId: number;
+
+  @ApiProperty({ description: 'The relationship with the students' })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateStudentToExamDto)
+  readonly studentToExam: CreateStudentToExamDto[];
 }

@@ -32,7 +32,7 @@ export class CreateTaskDto {
   @IsNumber()
   readonly courseId: number;
 
-  @ApiProperty({ description: 'The relation with students' })
+  @ApiProperty({ description: 'The relationship with the students' })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateStudentToTaskDto)
