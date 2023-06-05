@@ -13,7 +13,7 @@ export class StudentToExam {
   @Column()
   public examId: number;
 
-  @Column({ type: 'decimal', precision: 2, scale: 1, default: 0 })
+  @Column({ type: 'decimal', precision: 2, scale: 1, nullable: true })
   public marking: number;
 
   @Column({ nullable: true })
