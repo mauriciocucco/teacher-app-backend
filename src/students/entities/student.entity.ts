@@ -23,12 +23,9 @@ export class Student {
   @Column()
   lastname: string;
 
-  @Column()
-  courseId: number;
-
-  @ManyToMany(() => Subject, (subject) => subject.students)
+  @ManyToOne(() => Course, (course) => course.students)
   @JoinTable()
-  subjects: Subject[];
+  public course: Course;
 
   @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.student)
   public studentToTask: StudentToTask[];
@@ -36,6 +33,17 @@ export class Student {
   @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.student)
   public studentToExam: StudentToExam[];
 
-  @ManyToOne(() => Course, (course) => course.students)
-  public course: Course;
+  @ManyToMany(() => Subject, (subject) => subject.students)
+  @JoinTable({
+    name: 'student_subjects', // table name for the junction table of this relation
+    joinColumn: {
+      name: 'studentId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'subjectId',
+      referencedColumnName: 'id',
+    },
+  })
+  subjects: Subject[];
 }

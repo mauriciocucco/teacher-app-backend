@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -23,20 +24,16 @@ export class Exam {
   @Column({ type: 'timestamp', precision: 3 })
   date: Date;
 
-  @Column()
-  courseId: number;
-
-  @Column()
-  subjectId: number;
-
   @ManyToOne(() => Subject, (subject) => subject.exams)
+  @JoinColumn()
   subject: Subject;
+
+  @ManyToOne(() => Course, (course) => course.exams)
+  @JoinColumn()
+  course: Course;
 
   @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.exam, {
     cascade: true,
   })
   public studentToExam: StudentToExam[];
-
-  @ManyToOne(() => Course, (course) => course.exams)
-  course: Course;
 }

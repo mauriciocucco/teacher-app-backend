@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumberString, IsOptional } from 'class-validator';
+import { IsNumber, IsNumberString, IsOptional } from 'class-validator';
 
 export class FindExamsFiltersDto {
-  @ApiProperty({ description: 'The exam subject' })
-  @IsNumberString()
+  @ApiProperty({ description: 'The exam subject id' })
+  @IsNumber()
   @IsOptional()
-  readonly subjectId: string = '0';
+  readonly subject: number = 0;
 
-  @ApiProperty({ description: 'The exam subject' })
-  @IsNumberString()
+  @ApiProperty({ description: 'The exam subject id' })
+  @IsNumber()
   @IsOptional()
-  readonly courseId: string = '0';
+  readonly course: number = 0;
 
   @ApiProperty({ description: 'The range start of the exam' })
   @IsNumberString()

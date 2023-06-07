@@ -12,5 +12,5 @@ export class CreateStudentDto {
 
   @ApiProperty({ description: 'The course of the student' })
   @IsString()
-  readonly courseId: number;
+  readonly course: number;
 }

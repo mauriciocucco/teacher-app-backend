@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumberString, IsOptional } from 'class-validator';
+import { IsNumber, IsNumberString, IsOptional } from 'class-validator';
 
 export class FindTasksFiltersDto {
-  @ApiProperty({ description: 'The task subject' })
-  @IsNumberString()
+  @ApiProperty({ description: 'The task subject id' })
+  @IsNumber()
   @IsOptional()
-  readonly subjectId: string = '0';
+  readonly subject: number = 0;
 
-  @ApiProperty({ description: 'The task subject' })
-  @IsNumberString()
+  @ApiProperty({ description: 'The task subject id' })
+  @IsNumber()
   @IsOptional()
-  readonly courseId: string = '0';
+  readonly course: number = 0;
 
   @ApiProperty({ description: 'The range start of the task' })
   @IsNumberString()

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,17 +6,37 @@ import { Student } from './entities/student.entity';
 import { DataSource, Repository } from 'typeorm';
 import { FindStudentsFiltersDto } from './dto/find-students-filters.dto';
 import { Filters, cleanFilters } from '../utils/clean-filters';
+import { Course } from '../courses/entities/course.entity';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private studentsRepository: Repository<Student>,
+    @InjectRepository(Course)
+    private courseRepository: Repository<Course>,
     private dataSource: DataSource,
   ) {}
 
   async create(createStudentDto: CreateStudentDto): Promise<Student> {
-    return await this.studentsRepository.save(createStudentDto);
+    try {
+      const existingCourse = await this.courseRepository.findOneByOrFail({
+        id: createStudentDto.course,
+      });
+      const newStudent = await this.studentsRepository.create({
+        ...createStudentDto,
+        course: existingCourse,
+      });
+
+      return await this.studentsRepository.save(newStudent);
+    } catch (error) {
+      console.error('Hubo un error en create de Task: ', error);
+
+      throw new HttpException(
+        error.message || 'Internal Server Error',
+        error.status || 500,
+      );
+    }
   }
 
   async findAll(filters: FindStudentsFiltersDto): Promise<Student[]> {
@@ -40,13 +60,13 @@ export class StudentsService {
     //   'marking.id = tasks.markingId',
     // )
 
-    if (cleanedFilters.courseId) {
+    if (cleanedFilters.course) {
       students.andWhere('student.courseId = :courseId', {
-        courseId: cleanedFilters.courseId,
+        courseId: cleanedFilters.course,
       });
     }
 
-    return students.getMany();
+    return students.orderBy('student.lastname', 'ASC').getMany();
   }
 
   async findOne(id: number): Promise<Student> {
@@ -63,14 +83,27 @@ export class StudentsService {
     id: number,
     updateStudentDto: UpdateStudentDto,
   ): Promise<Student> {
-    const student = await this.studentsRepository.preload({
-      id,
-      ...updateStudentDto,
-    });
+    try {
+      const existingCourse = await this.courseRepository.findOneByOrFail({
+        id: updateStudentDto.course,
+      });
+      const student = await this.studentsRepository.preload({
+        id,
+        ...updateStudentDto,
+        course: existingCourse,
+      });
 
-    if (!student) throw new NotFoundException('Student not found');
+      if (!student) throw new NotFoundException('Student not found');
 
-    return await this.studentsRepository.save(student);
+      return await this.studentsRepository.save(student);
+    } catch (error) {
+      console.error(error);
+
+      throw new HttpException(
+        error.message || 'Internal Server Error',
+        error.status || 500,
+      );
+    }
   }
 
   async remove(id: number): Promise<Student> {

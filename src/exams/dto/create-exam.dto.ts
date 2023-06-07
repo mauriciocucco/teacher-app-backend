@@ -26,11 +26,11 @@ export class CreateExamDto {
 
   @ApiProperty({ description: 'The task subject' })
   @IsNumber()
-  readonly subjectId: number;
+  readonly subject: number;
 
   @ApiProperty({ description: 'The task course' })
   @IsNumber()
-  readonly courseId: number;
+  readonly course: number;
 
   @ApiProperty({ description: 'The relationship with the students' })
   @IsArray()
