@@ -68,6 +68,7 @@ export class TasksService {
       relations: {
         studentToTask: {
           student: true,
+          marking: true,
         },
         course: true,
         subject: true,
@@ -84,6 +85,17 @@ export class TasksService {
   async findOne(id: number): Promise<Task> {
     const task = await this.tasksRepository.findOne({
       where: { id },
+      relations: {
+        studentToTask: {
+          student: true,
+          marking: true,
+        },
+        course: true,
+        subject: true,
+      },
+      loadRelationIds: {
+        relations: ['course', 'subject'],
+      },
     });
 
     if (!task) throw new NotFoundException('Task not found');
@@ -98,10 +110,7 @@ export class TasksService {
       const task = await this.tasksRepository.findOne({
         where: { id },
         relations: {
-          studentToTask: {
-            student: true,
-            task: true,
-          },
+          studentToTask: true,
         },
       });
 
@@ -120,8 +129,8 @@ export class TasksService {
 
       if (student) {
         for (const relation of task.studentToTask) {
-          if (relation.student.id === updateRequest.studentToTask?.student) {
-            relation.marking.id = marking ?? relation.marking.id;
+          if (relation.studentId === updateRequest.studentToTask?.student) {
+            relation.markingId = marking ?? relation.markingId;
             relation.observation = observation ?? relation.observation;
             break;
           }

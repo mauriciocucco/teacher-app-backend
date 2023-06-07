@@ -4,7 +4,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { Task } from '../../tasks/entities/task.entity';
 import { Marking } from '../../markings/entities/marking.entity';
@@ -13,11 +13,17 @@ import { Student } from '../../students/entities/student.entity';
 @Entity()
 @Index(['student', 'task'], { unique: true })
 export class StudentToTask {
-  @PrimaryGeneratedColumn()
-  public studentToTaskId: number;
+  @PrimaryColumn()
+  public studentId: number;
+
+  @PrimaryColumn()
+  public taskId: number;
 
   @Column({ nullable: true })
   public observation: string;
+
+  @Column({ nullable: true })
+  markingId: number;
 
   @ManyToOne(() => Marking, (marking) => marking.studentToTask, {
     nullable: true,
@@ -29,7 +35,7 @@ export class StudentToTask {
   @JoinColumn()
   public student: Student;
 
-  @ManyToOne(() => Task, (task) => task.studentToTask)
+  @ManyToOne(() => Task, (task) => task.studentToTask, { onDelete: 'CASCADE' })
   @JoinColumn()
   public task: Task;
 }

@@ -33,7 +33,8 @@ export class Exam {
   course: Course;
 
   @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.exam, {
-    cascade: true,
+    cascade: ['insert', 'update'],
+    onDelete: 'CASCADE',
   })
   public studentToExam: StudentToExam[];
 }

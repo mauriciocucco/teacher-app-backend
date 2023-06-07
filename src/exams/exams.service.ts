@@ -84,6 +84,16 @@ export class ExamsService {
   async findOne(id: number): Promise<Exam> {
     const exam = await this.examsRepository.findOne({
       where: { id },
+      relations: {
+        studentToExam: {
+          student: true,
+        },
+        course: true,
+        subject: true,
+      },
+      loadRelationIds: {
+        relations: ['course', 'subject'],
+      },
     });
 
     if (!exam) throw new NotFoundException('Exam not found');

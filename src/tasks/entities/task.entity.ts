@@ -33,7 +33,8 @@ export class Task {
   course: Course;
 
   @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.task, {
-    cascade: true,
+    cascade: ['insert', 'update'],
+    onDelete: 'CASCADE',
   })
   public studentToTask: StudentToTask[];
 }
