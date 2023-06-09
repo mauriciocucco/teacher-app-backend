@@ -76,7 +76,7 @@ export class ExamsService {
         relations: ['course', 'subject'],
       },
       order: {
-        date: 'ASC',
+        date: 'DESC',
       },
     });
   }

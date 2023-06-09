@@ -77,7 +77,7 @@ export class TasksService {
         relations: ['course', 'subject'],
       },
       order: {
-        date: 'ASC',
+        date: 'DESC',
       },
     });
   }
