@@ -17,5 +17,5 @@ export class UpdateStudentToTaskDto extends PartialType(
   @ApiProperty({ description: 'The marking id' })
   @IsOptional()
   @IsNumber()
-  public marking: number;
+  public markingId: number;
 }

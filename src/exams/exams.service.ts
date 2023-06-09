@@ -103,15 +103,12 @@ export class ExamsService {
 
   async update(id: number, updateRequest: UpdateExamDto): Promise<Exam> {
     try {
-      const { student, marking, observation } =
+      const { studentId, marking, observation } =
         updateRequest.studentToExam ?? {};
       const exam = await this.examsRepository.findOne({
         where: { id },
         relations: {
-          studentToExam: {
-            student: true,
-            exam: true,
-          },
+          studentToExam: true,
         },
       });
 
@@ -128,9 +125,9 @@ export class ExamsService {
           })
         : null;
 
-      if (student) {
+      if (studentId) {
         for (const relation of exam.studentToExam) {
-          if (relation.student.id === updateRequest.studentToExam?.student) {
+          if (relation.studentId === updateRequest.studentToExam?.studentId) {
             relation.marking = marking ?? relation.marking;
             relation.observation = observation ?? relation.observation;
             break;
@@ -173,7 +170,7 @@ export class ExamsService {
   private async createStudentToExam(studentToExam: CreateStudentToExamDto) {
     try {
       const student = await this.studentRepository.findOneByOrFail({
-        id: studentToExam.student,
+        id: studentToExam.studentId,
       });
 
       return this.studentToExamRepository.create({

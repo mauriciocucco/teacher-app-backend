@@ -11,12 +11,11 @@ import { Marking } from '../../markings/entities/marking.entity';
 import { Student } from '../../students/entities/student.entity';
 
 @Entity()
-@Index(['student', 'task'], { unique: true })
 export class StudentToTask {
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   public studentId: number;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   public taskId: number;
 
   @Column({ nullable: true })

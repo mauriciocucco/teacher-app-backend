@@ -105,7 +105,7 @@ export class TasksService {
 
   async update(id: number, updateRequest: UpdateTaskDto): Promise<Task> {
     try {
-      const { student, marking, observation } =
+      const { studentId, markingId, observation } =
         updateRequest.studentToTask ?? {};
       const task = await this.tasksRepository.findOne({
         where: { id },
@@ -127,10 +127,10 @@ export class TasksService {
           })
         : null;
 
-      if (student) {
+      if (studentId) {
         for (const relation of task.studentToTask) {
-          if (relation.studentId === updateRequest.studentToTask?.student) {
-            relation.markingId = marking ?? relation.markingId;
+          if (relation.studentId === updateRequest.studentToTask?.studentId) {
+            relation.markingId = markingId ?? relation.markingId;
             relation.observation = observation ?? relation.observation;
             break;
           }
@@ -172,7 +172,7 @@ export class TasksService {
   private async createStudentToTask(studentToTask: CreateStudentToTaskDto) {
     try {
       const student = await this.studentRepository.findOneByOrFail({
-        id: studentToTask.student,
+        id: studentToTask.studentId,
       });
 
       return this.studentToTaskRepository.create({

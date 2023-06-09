@@ -4,13 +4,13 @@ import { Student } from '../../students/entities/student.entity';
 
 @Entity()
 export class StudentToExam {
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   public studentId: number;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   public examId: number;
 
-  @Column({ type: 'decimal', precision: 2, scale: 1, nullable: true })
+  @Column({ type: 'decimal', nullable: true })
   public marking: number;
 
   @Column({ nullable: true })
