@@ -24,6 +24,9 @@ export class Exam {
   @Column({ type: 'timestamp', precision: 3 })
   date: Date;
 
+  @Column()
+  courseId: number;
+
   @ManyToOne(() => Subject, (subject) => subject.exams)
   @JoinColumn()
   subject: Subject;

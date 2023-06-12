@@ -5,5 +5,5 @@ export class FindStudentsFiltersDto {
   @ApiProperty({ description: 'The students course' })
   @IsNumber()
   @IsOptional()
-  readonly course: number = 0;
+  readonly courseId: number = 0;
 }

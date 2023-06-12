@@ -60,9 +60,9 @@ export class StudentsService {
     //   'marking.id = tasks.markingId',
     // )
 
-    if (cleanedFilters.course) {
+    if (cleanedFilters.courseId) {
       students.andWhere('student.courseId = :courseId', {
-        courseId: cleanedFilters.course,
+        courseId: cleanedFilters.courseId,
       });
     }
 

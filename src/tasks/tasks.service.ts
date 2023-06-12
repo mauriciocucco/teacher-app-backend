@@ -178,6 +178,7 @@ export class TasksService {
       return this.studentToTaskRepository.create({
         ...studentToTask,
         student,
+        markingId: 16,
       });
     } catch (error) {
       throw error;

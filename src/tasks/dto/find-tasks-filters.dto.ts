@@ -10,7 +10,7 @@ export class FindTasksFiltersDto {
   @ApiProperty({ description: 'The task subject id' })
   @IsNumber()
   @IsOptional()
-  readonly course: number = 0;
+  readonly courseId: number = 0;
 
   @ApiProperty({ description: 'The range start of the task' })
   @IsNumberString()

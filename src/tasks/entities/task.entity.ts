@@ -24,6 +24,9 @@ export class Task {
   @Column({ type: 'timestamp', precision: 3 })
   date: string;
 
+  @Column()
+  courseId: number;
+
   @ManyToOne(() => Subject, (subject) => subject.tasks)
   @JoinColumn()
   subject: Subject;

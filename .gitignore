@@ -45,3 +45,8 @@ src/auth/constants/auth.ts
 
 # Docker
 docker-compose.yml
+Dockerfile
+.dockerignore
+
+# fly.io
+fly.toml

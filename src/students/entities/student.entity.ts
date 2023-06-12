@@ -23,6 +23,9 @@ export class Student {
   @Column()
   lastname: string;
 
+  @Column()
+  courseId: number;
+
   @ManyToOne(() => Course, (course) => course.students)
   @JoinTable()
   public course: Course;
