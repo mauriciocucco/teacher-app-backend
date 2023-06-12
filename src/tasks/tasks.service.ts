@@ -178,7 +178,7 @@ export class TasksService {
       return this.studentToTaskRepository.create({
         ...studentToTask,
         student,
-        markingId: 16,
+        markingId: 17, // sin entregar como defecto
       });
     } catch (error) {
       throw error;
