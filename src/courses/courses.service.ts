@@ -16,8 +16,12 @@ export class CoursesService {
     return await this.coursesRepository.save(createCourseDto);
   }
 
-  async findAll(): Promise<Course[]> {
-    return await this.coursesRepository.find();
+  async findAll(userId: number): Promise<Course[]> {
+    return await this.coursesRepository.find({
+      where: {
+        userId,
+      },
+    });
   }
 
   async findOne(id: number): Promise<Course> {

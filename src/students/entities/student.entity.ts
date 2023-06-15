@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -27,7 +28,7 @@ export class Student {
   courseId: number;
 
   @ManyToOne(() => Course, (course) => course.students)
-  @JoinTable()
+  @JoinColumn()
   public course: Course;
 
   @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.student)

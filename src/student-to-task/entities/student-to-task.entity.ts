@@ -21,7 +21,7 @@ export class StudentToTask {
   @Column({ nullable: true })
   public observation: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: 17 })
   markingId: number;
 
   @ManyToOne(() => Marking, (marking) => marking.studentToTask, {

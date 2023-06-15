@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -9,6 +10,8 @@ import { Student } from '../../students/entities/student.entity';
 import { Shifts } from '../enums/shifts.enum';
 import { Task } from '../../tasks/entities/task.entity';
 import { Exam } from '../../exams/entities/exam.entity';
+import { User } from '../../users/entities/user.entity';
+import { JoinColumn } from 'typeorm';
 
 @Entity('courses')
 @Index(['year', 'shift'], { unique: true })
@@ -24,6 +27,13 @@ export class Course {
 
   @Column({ nullable: true })
   description: string;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.courses)
+  @JoinColumn()
+  public user: User;
 
   @OneToMany(() => Student, (student) => student.course)
   students: Student[];
