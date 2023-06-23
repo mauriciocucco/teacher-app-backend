@@ -12,6 +12,8 @@ import { Subject } from '../subjects/entities/subject.entity';
 import { CreateStudentToExamDto } from '../student-to-exam/dto/create-student-to-exam.dto';
 import { StudentToExam } from '../student-to-exam/entities/student-to-exam.entity';
 import { Student } from '../students/entities/student.entity';
+import { updateExistingStudentToTask } from '../utils/update-existing-student-to-task';
+import { WorkType } from '../enums/work-type.enum';
 
 @Injectable()
 export class ExamsService {
@@ -103,8 +105,6 @@ export class ExamsService {
 
   async update(id: number, updateRequest: UpdateExamDto): Promise<Exam> {
     try {
-      const { studentId, marking, observation } =
-        updateRequest.studentToExam ?? {};
       const exam = await this.examsRepository.findOne({
         where: { id },
         relations: {
@@ -125,14 +125,12 @@ export class ExamsService {
           })
         : null;
 
-      if (studentId) {
-        for (const relation of exam.studentToExam) {
-          if (relation.studentId === updateRequest.studentToExam?.studentId) {
-            relation.marking = marking ?? relation.marking;
-            relation.observation = observation ?? relation.observation;
-            break;
-          }
-        }
+      if (updateRequest.studentToExam) {
+        updateExistingStudentToTask(
+          exam.studentToExam,
+          updateRequest.studentToExam,
+          WorkType.EXAM,
+        );
       }
 
       const deepUpdateRequestClone = JSON.parse(JSON.stringify(updateRequest));

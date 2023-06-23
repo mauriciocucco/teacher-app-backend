@@ -12,6 +12,7 @@ import { Subject } from '../subjects/entities/subject.entity';
 import { CreateStudentToTaskDto } from '../student-to-task/dto/create-student-to-task.dto';
 import { StudentToTask } from '../student-to-task/entities/student-to-task.entity';
 import { Student } from '../students/entities/student.entity';
+import { updateExistingStudentToTask } from '../utils/update-existing-student-to-task';
 
 @Injectable()
 export class TasksService {
@@ -105,8 +106,6 @@ export class TasksService {
 
   async update(id: number, updateRequest: UpdateTaskDto): Promise<Task> {
     try {
-      const { studentId, markingId, observation } =
-        updateRequest.studentToTask ?? {};
       const task = await this.tasksRepository.findOne({
         where: { id },
         relations: {
@@ -127,14 +126,11 @@ export class TasksService {
           })
         : null;
 
-      if (studentId) {
-        for (const relation of task.studentToTask) {
-          if (relation.studentId === updateRequest.studentToTask?.studentId) {
-            relation.markingId = markingId ?? relation.markingId;
-            relation.observation = observation ?? relation.observation;
-            break;
-          }
-        }
+      if (updateRequest.studentToTask) {
+        updateExistingStudentToTask(
+          task.studentToTask,
+          updateRequest.studentToTask,
+        );
       }
 
       const deepUpdateRequestClone = JSON.parse(JSON.stringify(updateRequest));
