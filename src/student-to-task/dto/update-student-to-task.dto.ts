@@ -5,10 +5,6 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateStudentToTaskDto extends PartialType(
   CreateStudentToTaskDto,
 ) {
-  @ApiProperty({ description: 'The task id' })
-  @IsNumber()
-  public taskId: number;
-
   @ApiProperty({ description: 'The observation for the student task' })
   @IsOptional()
   @IsString()
