@@ -14,7 +14,7 @@ export const updateExistingStudentToTask = (
       ({ studentId }) => studentId === newStudentToTask.studentId,
     );
 
-    if (index) {
+    if (index !== -1) {
       workType === WorkType.TASK
         ? ((existingArray[index] as StudentToTask).markingId =
             newStudentToTask.markingId ??
