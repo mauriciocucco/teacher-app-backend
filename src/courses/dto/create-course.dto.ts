@@ -9,7 +9,7 @@ export class CreateCourseDto {
 
   @ApiProperty({ description: 'The course shift' })
   @IsEnum(Shifts)
-  readonly shift: Shifts;
+  readonly shift: string;
 
   @ApiProperty({ description: 'The course description' })
   @IsString()

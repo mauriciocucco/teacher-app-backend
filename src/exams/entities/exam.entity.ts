@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { Subject } from '../../subjects/entities/subject.entity';
 import { StudentToExam } from '../../student-to-exam/entities/student-to-exam.entity';
@@ -24,16 +25,16 @@ export class Exam {
   @Column({ type: 'timestamp', precision: 3 })
   date: Date;
 
-  @Column()
+  @Column({ select: false })
   courseId: number;
 
   @ManyToOne(() => Subject, (subject) => subject.exams)
   @JoinColumn()
-  subject: Subject;
+  subject: Relation<Subject>;
 
   @ManyToOne(() => Course, (course) => course.exams)
   @JoinColumn()
-  course: Course;
+  course: Relation<Course>;
 
   @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.exam, {
     cascade: ['insert', 'update'],

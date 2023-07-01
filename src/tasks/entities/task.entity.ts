@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { Subject } from '../../subjects/entities/subject.entity';
 import { StudentToTask } from '../../student-to-task/entities/student-to-task.entity';
@@ -24,16 +25,16 @@ export class Task {
   @Column({ type: 'timestamp', precision: 3 })
   date: string;
 
-  @Column()
+  @Column({ select: false })
   courseId: number;
 
   @ManyToOne(() => Subject, (subject) => subject.tasks)
   @JoinColumn()
-  subject: Subject;
+  subject: Relation<Subject>;
 
   @ManyToOne(() => Course, (course) => course.tasks)
   @JoinColumn()
-  course: Course;
+  course: Relation<Course>;
 
   @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.task, {
     cascade: ['insert', 'update'],

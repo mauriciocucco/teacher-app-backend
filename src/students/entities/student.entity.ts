@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { Subject } from '../../subjects/entities/subject.entity';
 import { Course } from '../../courses/entities/course.entity';
@@ -24,12 +25,12 @@ export class Student {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({ select: false })
   courseId: number;
 
   @ManyToOne(() => Course, (course) => course.students)
   @JoinColumn()
-  public course: Course;
+  public course: Relation<Course>;
 
   @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.student)
   public studentToTask: StudentToTask[];

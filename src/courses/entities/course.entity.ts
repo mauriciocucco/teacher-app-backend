@@ -5,9 +5,9 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { Student } from '../../students/entities/student.entity';
-import { Shifts } from '../enums/shifts.enum';
 import { Task } from '../../tasks/entities/task.entity';
 import { Exam } from '../../exams/entities/exam.entity';
 import { User } from '../../users/entities/user.entity';
@@ -23,17 +23,17 @@ export class Course {
   year: number;
 
   @Column()
-  shift: Shifts;
+  shift: string;
 
   @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ select: false })
   userId: number;
 
   @ManyToOne(() => User, (user) => user.courses)
   @JoinColumn()
-  public user: User;
+  public user: Relation<User>;
 
   @OneToMany(() => Student, (student) => student.course)
   students: Student[];

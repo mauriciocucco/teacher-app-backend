@@ -80,6 +80,7 @@ export class ExamsService {
       order: {
         date: 'DESC',
       },
+      cache: true,
     });
   }
 
@@ -114,17 +115,6 @@ export class ExamsService {
 
       if (!exam) throw new NotFoundException('Exam not found');
 
-      const existingCourse = updateRequest.course
-        ? await this.courseRepository.findOneByOrFail({
-            id: updateRequest.course,
-          })
-        : null;
-      const existingSubject = updateRequest.subject
-        ? await this.subjectRepository.findOneByOrFail({
-            id: updateRequest.subject,
-          })
-        : null;
-
       if (updateRequest.studentToExam) {
         updateExistingStudentToTask(
           exam.studentToExam,
@@ -134,10 +124,6 @@ export class ExamsService {
       }
 
       const deepUpdateRequestClone = JSON.parse(JSON.stringify(updateRequest));
-
-      if (existingCourse) deepUpdateRequestClone.course = existingCourse;
-      if (existingSubject) deepUpdateRequestClone.subject = existingSubject;
-
       const updatedExam = await this.examsRepository.preload({
         ...exam,
         ...deepUpdateRequestClone,

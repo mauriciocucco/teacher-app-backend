@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 import { Exam } from '../../exams/entities/exam.entity';
 import { Student } from '../../students/entities/student.entity';
 
@@ -18,9 +25,9 @@ export class StudentToExam {
 
   @ManyToOne(() => Student, (student) => student.studentToExam)
   @JoinColumn()
-  public student: Student;
+  public student: Relation<Student>;
 
   @ManyToOne(() => Exam, (task) => task.studentToExam, { onDelete: 'CASCADE' })
   @JoinColumn()
-  public exam: Exam;
+  public exam: Relation<Exam>;
 }

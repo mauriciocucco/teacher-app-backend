@@ -13,5 +13,5 @@ export class CreateUserDto {
 
   @ApiProperty({ description: 'The role of the user' })
   @IsEnum(Roles)
-  readonly role: Roles = Roles.Teacher;
+  readonly role: string;
 }

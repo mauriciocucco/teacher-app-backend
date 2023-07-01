@@ -3,14 +3,12 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { checkHash } from '../utils/bcrypt';
-import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private dataSource: DataSource,
   ) {}
 
   async signIn(loginDto: LoginDto) {

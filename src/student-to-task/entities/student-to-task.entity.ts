@@ -1,10 +1,10 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
+  Relation,
 } from 'typeorm';
 import { Task } from '../../tasks/entities/task.entity';
 import { Marking } from '../../markings/entities/marking.entity';
@@ -32,9 +32,9 @@ export class StudentToTask {
 
   @ManyToOne(() => Student, (student) => student.studentToTask)
   @JoinColumn()
-  public student: Student;
+  public student: Relation<Student>;
 
   @ManyToOne(() => Task, (task) => task.studentToTask, { onDelete: 'CASCADE' })
   @JoinColumn()
-  public task: Task;
+  public task: Relation<Task>;
 }

@@ -80,6 +80,7 @@ export class TasksService {
       order: {
         date: 'DESC',
       },
+      cache: true,
     });
   }
 
@@ -115,18 +116,8 @@ export class TasksService {
 
       if (!task) throw new NotFoundException('Task not found');
 
-      const existingCourse = updateRequest.course
-        ? await this.courseRepository.findOneByOrFail({
-            id: updateRequest.course,
-          })
-        : null;
-      const existingSubject = updateRequest.subject
-        ? await this.subjectRepository.findOneByOrFail({
-            id: updateRequest.subject,
-          })
-        : null;
-
       if (updateRequest.studentToTask) {
+        // con esta función actualizo el array de task.studentToTask
         updateExistingStudentToTask(
           task.studentToTask,
           updateRequest.studentToTask,
@@ -134,14 +125,10 @@ export class TasksService {
       }
 
       const deepUpdateRequestClone = JSON.parse(JSON.stringify(updateRequest));
-
-      if (existingCourse) deepUpdateRequestClone.course = existingCourse;
-      if (existingSubject) deepUpdateRequestClone.subject = existingSubject;
-
       const updatedTask = await this.tasksRepository.preload({
         ...task,
         ...deepUpdateRequestClone,
-        studentToTask: [...task.studentToTask],
+        studentToTask: [...task.studentToTask], // el task.studenToTask se actualizó con  updateExistingStudentToTask
       });
 
       if (!updatedTask) throw new NotFoundException('Task not found');
