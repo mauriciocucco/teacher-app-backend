@@ -13,6 +13,7 @@ import { CreateStudentToTaskDto } from '../student-to-task/dto/create-student-to
 import { StudentToTask } from '../student-to-task/entities/student-to-task.entity';
 import { Student } from '../students/entities/student.entity';
 import { updateExistingStudentToTask } from '../utils/update-existing-student-to-task';
+import { UNDELIVERED_MARKINGS } from './constants/undeliverede.const';
 
 @Injectable()
 export class TasksService {
@@ -64,24 +65,46 @@ export class TasksService {
     const cleanedFilters = cleanFilters(filters as unknown as Filters);
     const filterWithDate = addDateRange(cleanedFilters);
 
-    return await this.tasksRepository.find({
-      where: filterWithDate,
-      relations: {
-        studentToTask: {
-          student: true,
-          marking: true,
-        },
-        course: true,
-        subject: true,
-      },
-      loadRelationIds: {
-        relations: ['course', 'subject'],
-      },
-      order: {
-        date: 'DESC',
-      },
-      cache: true,
-    });
+    return await this.tasksRepository
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.studentToTask', 'studentToTask')
+      .leftJoinAndSelect('studentToTask.marking', 'marking')
+      .leftJoinAndSelect('studentToTask.student', 'student')
+      .leftJoin('task.course', 'course')
+      .addSelect(['course.id'])
+      .leftJoin('task.subject', 'subject')
+      .addSelect(['subject.id'])
+      .loadRelationCountAndMap(
+        'task.totalDelivered',
+        'task.studentToTask',
+        'studentToTask',
+        (qb) =>
+          qb.where('studentToTask.markingId NOT IN (:...markingIds)', {
+            markingIds: UNDELIVERED_MARKINGS,
+          }),
+      )
+      .orderBy('task.date', 'DESC')
+      .where(filterWithDate)
+      .getMany();
+
+    // return await this.tasksRepository.find({
+    //   where: filterWithDate,
+    //   relations: {
+    //     studentToTask: {
+    //       student: true,
+    //       marking: true,
+    //     },
+    //     course: true,
+    //     subject: true,
+    //   },
+    //   loadRelationIds: {
+    //     relations: ['course', 'subject'],
+    //   },
+    //   order: {
+    //     date: 'DESC',
+    //   },
+    //   cache: true,
+    // });
   }
 
   async findOne(id: number): Promise<Task> {
