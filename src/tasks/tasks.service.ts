@@ -108,20 +108,40 @@ export class TasksService {
   }
 
   async findOne(id: number): Promise<Task> {
-    const task = await this.tasksRepository.findOne({
-      where: { id },
-      relations: {
-        studentToTask: {
-          student: true,
-          marking: true,
-        },
-        course: true,
-        subject: true,
-      },
-      loadRelationIds: {
-        relations: ['course', 'subject'],
-      },
-    });
+    // const task = await this.tasksRepository.findOne({
+    //   where: { id },
+    //   relations: {
+    //     studentToTask: {
+    //       student: true,
+    //       marking: true,
+    //     },
+    //     course: true,
+    //     subject: true,
+    //   },
+    //   loadRelationIds: {
+    //     relations: ['course', 'subject'],
+    //   },
+    // });
+    const task = await this.tasksRepository
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.studentToTask', 'studentToTask')
+      .leftJoinAndSelect('studentToTask.marking', 'marking')
+      .leftJoinAndSelect('studentToTask.student', 'student')
+      .leftJoin('task.course', 'course')
+      .addSelect(['course.id'])
+      .leftJoin('task.subject', 'subject')
+      .addSelect(['subject.id'])
+      .loadRelationCountAndMap(
+        'task.totalDelivered',
+        'task.studentToTask',
+        'studentToTask',
+        (qb) =>
+          qb.where('studentToTask.markingId NOT IN (:...markingIds)', {
+            markingIds: UNDELIVERED_MARKINGS,
+          }),
+      )
+      .where({ id })
+      .getOne();
 
     if (!task) throw new NotFoundException('Task not found');
 
