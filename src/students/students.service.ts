@@ -116,12 +116,16 @@ export class StudentsService {
         .leftJoin('student.course', 'course')
         .addSelect(['course.id'])
         .leftJoin('student.studentToTask', 'tasks')
+        .leftJoin('tasks.task', 'task')
+        .leftJoin('task.subject', 'subject')
+        .addSelect(['subject.id', 'subject.name'])
         .leftJoin('tasks.marking', 'marking')
-        .addSelect(['COUNT(*)', 'marking.name', 'marking.id'])
+        .addSelect(['COUNT(*)', 'marking.description', 'marking.id'])
         .where('student.id = :studentId', { studentId })
         .groupBy('student.id')
         .addGroupBy('course.id')
         .addGroupBy('tasks.studentId')
+        .addGroupBy('subject.id')
         .addGroupBy('marking.id')
         .getRawMany();
 
