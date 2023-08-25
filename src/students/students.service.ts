@@ -108,4 +108,28 @@ export class StudentsService {
 
     return this.studentsRepository.remove(student);
   }
+
+  async findPerformance(studentId: number) {
+    try {
+      const studentPerformance = await this.studentsRepository
+        .createQueryBuilder('student')
+        .leftJoin('student.course', 'course')
+        .addSelect(['course.id'])
+        .leftJoin('student.studentToTask', 'tasks')
+        .leftJoin('tasks.marking', 'marking')
+        .addSelect(['COUNT(*)', 'marking.name', 'marking.id'])
+        .where('student.id = :studentId', { studentId })
+        .groupBy('student.id')
+        .addGroupBy('course.id')
+        .addGroupBy('tasks.studentId')
+        .addGroupBy('marking.id')
+        .getRawMany();
+
+      return studentPerformance;
+    } catch (error) {
+      console.log('findPerformance error: ', error);
+
+      throw error;
+    }
+  }
 }
