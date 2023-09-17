@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { FindTasksFiltersDto } from './dto/find-tasks-filters.dto';
+import { PaginationInterceptor } from '../shared/interceptors/pagination.interceptor';
 
 @Controller('tasks')
 export class TasksController {
@@ -23,6 +25,7 @@ export class TasksController {
   }
 
   @Get()
+  @UseInterceptors(PaginationInterceptor)
   findAll(@Query() filters: FindTasksFiltersDto) {
     return this.tasksService.findAll(filters);
   }

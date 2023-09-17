@@ -61,11 +61,13 @@ export class ExamsService {
     }
   }
 
-  async findAll(filters: FindExamsFiltersDto): Promise<Exam[]> {
-    const cleanedFilters = cleanFilters(filters as unknown as Filters);
+  async findAll(filters: FindExamsFiltersDto): Promise<[Exam[], number]> {
+    const { limit, page, ...otherFilters } = filters;
+    const skip = (page - 1) * limit;
+    const cleanedFilters = cleanFilters(otherFilters as unknown as Filters);
     const filterWithDate = addDateRange(cleanedFilters);
 
-    return await this.examsRepository.find({
+    return await this.examsRepository.findAndCount({
       where: filterWithDate,
       relations: {
         studentToExam: {
@@ -74,13 +76,12 @@ export class ExamsService {
         course: true,
         subject: true,
       },
-      loadRelationIds: {
-        relations: ['course', 'subject'],
-      },
       order: {
         date: 'DESC',
       },
       cache: true,
+      take: limit,
+      skip,
     });
   }
 

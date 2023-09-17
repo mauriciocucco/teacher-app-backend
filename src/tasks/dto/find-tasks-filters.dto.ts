@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNumberString, IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsNumber, IsNumberString, IsOptional } from 'class-validator';
 
 export class FindTasksFiltersDto {
   @ApiProperty({ description: 'The task subject id' })
@@ -21,4 +22,20 @@ export class FindTasksFiltersDto {
   @IsNumberString()
   @IsOptional()
   endDate: number | string = '0';
+
+  @ApiPropertyOptional({
+    description: 'Page number',
+  })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  page?: number = 1;
+
+  @ApiPropertyOptional({
+    description: 'Max number of records to return',
+  })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  limit?: number = 6;
 }

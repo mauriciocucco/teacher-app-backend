@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { FindExamsFiltersDto } from './dto/find-exams-filters.dto';
+import { PaginationInterceptor } from '../shared/interceptors/pagination.interceptor';
 
 @Controller('exams')
 export class ExamsController {
@@ -23,6 +25,7 @@ export class ExamsController {
   }
 
   @Get()
+  @UseInterceptors(PaginationInterceptor)
   findAll(@Query() filters: FindExamsFiltersDto) {
     return this.examsService.findAll(filters);
   }

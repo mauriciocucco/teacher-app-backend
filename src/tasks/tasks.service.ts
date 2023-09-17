@@ -61,8 +61,10 @@ export class TasksService {
     }
   }
 
-  async findAll(filters: FindTasksFiltersDto): Promise<Task[]> {
-    const cleanedFilters = cleanFilters(filters as unknown as Filters);
+  async findAll(filters: FindTasksFiltersDto): Promise<[Task[], number]> {
+    const { limit, page, ...otherFilters } = filters;
+    const skip = (page - 1) * limit;
+    const cleanedFilters = cleanFilters(otherFilters as unknown as Filters);
     const filterWithDate = addDateRange(cleanedFilters);
 
     return await this.tasksRepository
@@ -85,43 +87,13 @@ export class TasksService {
       )
       .orderBy('task.date', 'DESC')
       .where(filterWithDate)
-      .getMany();
-
-    // return await this.tasksRepository.find({
-    //   where: filterWithDate,
-    //   relations: {
-    //     studentToTask: {
-    //       student: true,
-    //       marking: true,
-    //     },
-    //     course: true,
-    //     subject: true,
-    //   },
-    //   loadRelationIds: {
-    //     relations: ['course', 'subject'],
-    //   },
-    //   order: {
-    //     date: 'DESC',
-    //   },
-    //   cache: true,
-    // });
+      .cache(true)
+      .take(limit)
+      .skip(skip)
+      .getManyAndCount();
   }
 
   async findOne(id: number): Promise<Task> {
-    // const task = await this.tasksRepository.findOne({
-    //   where: { id },
-    //   relations: {
-    //     studentToTask: {
-    //       student: true,
-    //       marking: true,
-    //     },
-    //     course: true,
-    //     subject: true,
-    //   },
-    //   loadRelationIds: {
-    //     relations: ['course', 'subject'],
-    //   },
-    // });
     const task = await this.tasksRepository
       .createQueryBuilder('task')
       .leftJoinAndSelect('task.studentToTask', 'studentToTask')
