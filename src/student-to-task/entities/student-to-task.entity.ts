@@ -21,6 +21,9 @@ export class StudentToTask {
   @Column({ nullable: true })
   public observation: string;
 
+  @Column({ name: 'on_time', nullable: true, default: false })
+  onTime: boolean;
+
   @Column({ nullable: true, default: 17 })
   markingId: number;
 

@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateStudentToTaskDto } from './create-student-to-task.dto';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateStudentToTaskDto extends PartialType(
   CreateStudentToTaskDto,
@@ -9,6 +9,11 @@ export class UpdateStudentToTaskDto extends PartialType(
   @IsOptional()
   @IsString()
   public observation: string;
+
+  @ApiProperty({ description: 'If student has delivered the task on time' })
+  @IsOptional()
+  @IsBoolean()
+  readonly onTime: boolean;
 
   @ApiProperty({ description: 'The marking id' })
   @IsOptional()
