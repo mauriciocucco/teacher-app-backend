@@ -50,7 +50,12 @@ export class StudentsService {
       .leftJoin('student.studentToExam', 'exams')
       .addSelect(['exams.examId', 'exams.marking', 'exams.observation'])
       .leftJoin('student.studentToTask', 'tasks')
-      .addSelect(['tasks.taskId', 'tasks.markingId', 'tasks.observation']);
+      .addSelect([
+        'tasks.taskId',
+        'tasks.markingId',
+        'tasks.observation',
+        'tasks.onTime',
+      ]);
 
     if (cleanedFilters.courseId) {
       studentsQuery.andWhere('student.courseId = :courseId', {
