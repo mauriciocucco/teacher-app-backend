@@ -61,21 +61,19 @@ export class TasksService {
     }
   }
 
-  async findAll(filters: FindTasksFiltersDto): Promise<[Task[], number]> {
-    const { limit, page, ...otherFilters } = filters;
-    const skip = (page - 1) * limit;
-    const cleanedFilters = cleanFilters(otherFilters as unknown as Filters);
+  async findAll(filters: FindTasksFiltersDto): Promise<Task[]> {
+    const cleanedFilters = cleanFilters(filters as unknown as Filters);
     const filterWithDate = addDateRange(cleanedFilters);
 
     return await this.tasksRepository
       .createQueryBuilder('task')
-      .leftJoinAndSelect('task.studentToTask', 'studentToTask')
-      .leftJoinAndSelect('studentToTask.marking', 'marking')
-      .leftJoinAndSelect('studentToTask.student', 'student')
       .leftJoin('task.course', 'course')
       .addSelect(['course.id'])
       .leftJoin('task.subject', 'subject')
       .addSelect(['subject.id'])
+      .leftJoinAndSelect('task.studentToTask', 'studentToTask')
+      .leftJoinAndSelect('studentToTask.marking', 'marking')
+      .leftJoinAndSelect('studentToTask.student', 'student')
       .loadRelationCountAndMap(
         'task.totalDelivered',
         'task.studentToTask',
@@ -85,12 +83,10 @@ export class TasksService {
             markingIds: UNDELIVERED_MARKINGS,
           }),
       )
-      .orderBy('task.date', 'DESC')
       .where(filterWithDate)
+      .orderBy('task.date', 'DESC')
       .cache(true)
-      .take(limit)
-      .skip(skip)
-      .getManyAndCount();
+      .getMany();
   }
 
   async findOne(id: number): Promise<Task> {

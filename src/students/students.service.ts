@@ -49,8 +49,18 @@ export class StudentsService {
       .createQueryBuilder('student')
       .leftJoin('student.studentToExam', 'exams')
       .addSelect(['exams.examId', 'exams.marking', 'exams.observation'])
-      .leftJoin('student.studentToTask', 'tasks')
-      .addSelect(['tasks.taskId', 'tasks.markingId', 'tasks.observation']);
+      .leftJoin('student.studentToTask', 'studentToTask')
+      .addSelect([
+        'studentToTask.taskId',
+        'studentToTask.markingId',
+        'studentToTask.observation',
+      ])
+      .leftJoin('studentToTask.task', 'task')
+      .addSelect(['task.name', 'task.description', 'task.date'])
+      .leftJoin('studentToTask.marking', 'marking')
+      .addSelect(['marking.name', 'marking.description'])
+      .leftJoin('task.subject', 'subject')
+      .addSelect(['subject.id']);
 
     if (cleanedFilters.courseId) {
       studentsQuery.andWhere('student.courseId = :courseId', {
