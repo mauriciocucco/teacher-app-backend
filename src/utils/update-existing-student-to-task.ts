@@ -22,6 +22,11 @@ export const updateExistingStudentToTask = (
         : (existingArray[index].marking =
             newStudentToTask.marking ?? existingArray[index].marking);
 
+      if (workType === WorkType.TASK)
+        (existingArray[index] as StudentToTask).onTime =
+          newStudentToTask.onTime ??
+          (existingArray[index] as StudentToTask).onTime;
+
       existingArray[index].observation =
         newStudentToTask.observation ?? existingArray[index].observation;
     }
