@@ -74,8 +74,16 @@ export class ExamsService {
         course: true,
         subject: true,
       },
-      loadRelationIds: {
-        relations: ['course', 'subject'],
+      // loadRelationIds: {
+      //   relations: ['course', 'subject'],
+      // },
+      select: {
+        course: {
+          id: true,
+        },
+        subject: {
+          id: true,
+        },
       },
       order: {
         date: 'DESC',
