@@ -16,6 +16,9 @@ import { MarkingsModule } from './markings/markings.module';
 import { ExamsModule } from './exams/exams.module';
 import { StudentToTaskModule } from './student-to-task/student-to-task.module';
 import { StudentToExamModule } from './student-to-exam/student-to-exam.module';
+import { WorksModule } from './works/works.module';
+import { StudentToWorkModule } from './student-to-work/student-to-work.module';
+import { WorkTypesModule } from './work-types/work-types.module';
 
 @Module({
   imports: [
@@ -40,6 +43,9 @@ import { StudentToExamModule } from './student-to-exam/student-to-exam.module';
     ExamsModule,
     StudentToTaskModule,
     StudentToExamModule,
+    WorksModule,
+    StudentToWorkModule,
+    WorkTypesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { StudentToTask } from '../../student-to-task/entities/student-to-task.entity';
+import { StudentToWork } from '../../student-to-work/entities/student-to-work.entity';
 
 @Entity('markings')
 export class Marking {
@@ -12,6 +12,6 @@ export class Marking {
   @Column()
   description: string;
 
-  @OneToMany(() => StudentToTask, (studentToTask) => studentToTask.marking)
-  studentToTask: StudentToTask[];
+  @OneToMany(() => StudentToWork, (studentToWork) => studentToWork.marking)
+  studentToWork: StudentToWork[];
 }
