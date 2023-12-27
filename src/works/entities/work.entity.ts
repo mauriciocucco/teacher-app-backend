@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   Relation,
 } from 'typeorm';
@@ -21,7 +20,7 @@ export class Work {
   @Column()
   name: string;
 
-  @Column({ name: 'work_type_id' })
+  @Column({ name: 'work_type_id', unique: false })
   workTypeId: number;
 
   @Column({ nullable: true })
@@ -36,7 +35,7 @@ export class Work {
   @Column()
   subjectId: number;
 
-  @OneToOne(() => WorkType, (workType) => workType.works)
+  @ManyToOne(() => WorkType, (workType) => workType.works)
   @JoinColumn({ name: 'work_type_id', referencedColumnName: 'id' })
   workType: Relation<WorkType>;
 

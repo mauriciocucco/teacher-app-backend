@@ -36,7 +36,7 @@ export class StudentToWork {
   @JoinColumn()
   public marking: Relation<Marking>;
 
-  @ManyToOne(() => Student, (student) => student.studentToTask)
+  @ManyToOne(() => Student, (student) => student.studentToWork)
   @JoinColumn()
   public student: Relation<Student>;
 

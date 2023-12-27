@@ -13,6 +13,7 @@ import { Subject } from '../../subjects/entities/subject.entity';
 import { Course } from '../../courses/entities/course.entity';
 import { StudentToTask } from '../../student-to-task/entities/student-to-task.entity';
 import { StudentToExam } from '../../student-to-exam/entities/student-to-exam.entity';
+import { StudentToWork } from '../../student-to-work/entities/student-to-work.entity';
 
 @Entity('students')
 export class Student {
@@ -25,7 +26,7 @@ export class Student {
   @Column()
   lastname: string;
 
-  @Column({ select: false })
+  @Column()
   courseId: number;
 
   @ManyToOne(() => Course, (course) => course.students)
@@ -37,6 +38,9 @@ export class Student {
 
   @OneToMany(() => StudentToExam, (studentToExam) => studentToExam.student)
   public studentToExam: StudentToExam[];
+
+  @OneToMany(() => StudentToWork, (studentToWork) => studentToWork.student)
+  public studentToWork: StudentToWork[];
 
   @ManyToMany(() => Subject, (subject) => subject.students)
   @JoinTable({

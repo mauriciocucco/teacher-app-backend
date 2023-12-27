@@ -12,7 +12,7 @@ import { CreateStudentToWorkDto } from '../student-to-work/dto/create-student-to
 import { FindWorksFiltersDto } from '../work-types/dto/find-works-filters.dto';
 import { Filters, cleanFilters } from '../utils/clean-filters';
 import { addDateRange } from '../utils/date-range-filter';
-import { UNDELIVERED_MARKINGS } from './constants/undeliverede.const';
+import { UNDELIVERED_MARKINGS } from './constants/undelivered.const';
 import { updateExistingStudentToWork } from '../utils/update-existing-student-to-work';
 
 @Injectable()
@@ -45,7 +45,7 @@ export class WorksService {
       });
       const studentToWork = await Promise.all(
         studentToWorkRequest.map((studentToWork) =>
-          this.createStudentToWork(studentToWork),
+          this.createStudentToWork(studentToWork, courseId),
         ),
       );
       const newWork = await this.worksRepository.create({
@@ -161,12 +161,21 @@ export class WorksService {
     return this.worksRepository.remove(work);
   }
 
-  private async createStudentToWork(studentToWork: CreateStudentToWorkDto) {
+  private async createStudentToWork(
+    studentToWork: CreateStudentToWorkDto,
+    courseId: number,
+  ) {
     try {
       const { studentId } = studentToWork;
       const student = await this.studentRepository.findOneByOrFail({
         id: studentId,
       });
+
+      if (student.courseId !== courseId)
+        throw new HttpException(
+          `${student.name} ${student.lastname} does not belong to this course`,
+          422,
+        );
 
       return this.studentToWorkRepository.create({
         ...studentToWork,

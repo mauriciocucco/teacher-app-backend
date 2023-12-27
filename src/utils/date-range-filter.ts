@@ -1,9 +1,13 @@
 import { FindExamsFiltersDto } from 'src/exams/dto/find-exams-filters.dto';
 import { FindTasksFiltersDto } from 'src/tasks/dto/find-tasks-filters.dto';
 import { Between } from 'typeorm';
+import { FindStudentsFiltersDto } from '../students/dto/find-students-filters.dto';
 
 export const addDateRange = (
-  cleanedFilters: FindExamsFiltersDto | FindTasksFiltersDto,
+  cleanedFilters:
+    | FindExamsFiltersDto
+    | FindTasksFiltersDto
+    | FindStudentsFiltersDto,
 ) => {
   if (!cleanedFilters.startDate && !cleanedFilters.endDate)
     return cleanedFilters;
@@ -13,8 +17,8 @@ export const addDateRange = (
   let start: Date | string = new Date(+startDate);
   let end: Date | string = new Date(+endDate);
 
-  start = new Date(start.setDate(start.getDate() - 1)).toISOString(); //le resto un día por que el Between es (x,y), no [x,y]
-  end = new Date(end.setDate(end.getDate() + 1)).toISOString(); //le sumo un día por que el Between es (x,y), no [x,y]
+  start = new Date(start.setMinutes(start.getMinutes() - 1)).toISOString(); //le resto un minuto por que el Between es (x,y), no [x,y]
+  end = new Date(end.setMinutes(end.getMinutes() + 1)).toISOString(); //le sumo un minuto por que el Between es (x,y), no [x,y]
 
   deepCopy.date = Between(start, end);
 

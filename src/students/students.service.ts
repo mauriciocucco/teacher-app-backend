@@ -7,6 +7,8 @@ import { DataSource, Repository } from 'typeorm';
 import { FindStudentsFiltersDto } from './dto/find-students-filters.dto';
 import { Filters, cleanFilters } from '../utils/clean-filters';
 import { Course } from '../courses/entities/course.entity';
+import { addDateRange } from '../utils/date-range-filter';
+import { UNDELIVERED_MARKINGS } from '../works/constants/undelivered.const';
 
 @Injectable()
 export class StudentsService {
@@ -40,26 +42,47 @@ export class StudentsService {
   }
 
   async findAll(filters: FindStudentsFiltersDto): Promise<Student[]> {
-    const cleanedFilters = cleanFilters(
-      filters as unknown as Filters,
-    ) as unknown as FindStudentsFiltersDto;
+    const cleanedFilters = cleanFilters(filters as unknown as Filters);
+    const { courseId, subjectId, date } = addDateRange(cleanedFilters);
 
     const studentsQuery = this.dataSource
       .getRepository(Student)
       .createQueryBuilder('student')
-      .leftJoin('student.studentToExam', 'exams')
-      .addSelect(['exams.examId', 'exams.marking', 'exams.observation'])
-      .leftJoin('student.studentToTask', 'tasks')
+      .leftJoin('student.studentToWork', 'studentToWork')
       .addSelect([
-        'tasks.taskId',
-        'tasks.markingId',
-        'tasks.observation',
-        'tasks.onTime',
-      ]);
+        'studentToWork.workId',
+        'studentToWork.observation',
+        'studentToWork.onTime',
+        'studentToWork.score',
+        'studentToWork.markingId',
+      ])
+      .leftJoinAndSelect('studentToWork.work', 'work')
+      .loadRelationCountAndMap(
+        'work.totalDelivered',
+        'work.studentToWork',
+        'studentToWork',
+        (qb) =>
+          qb.where('studentToWork.markingId NOT IN (:...markingIds)', {
+            markingIds: UNDELIVERED_MARKINGS,
+          }),
+      );
 
-    if (cleanedFilters.courseId) {
+    if (courseId) {
       studentsQuery.andWhere('student.courseId = :courseId', {
-        courseId: cleanedFilters.courseId,
+        courseId,
+      });
+    }
+
+    if (subjectId) {
+      studentsQuery.andWhere('work.subjectId = :subjectId', {
+        subjectId,
+      });
+    }
+
+    if (date?._value?.length > 0) {
+      studentsQuery.andWhere('work.date BETWEEN :startDate AND :endDate', {
+        startDate: date._value[0],
+        endDate: date._value[1],
       });
     }
 
