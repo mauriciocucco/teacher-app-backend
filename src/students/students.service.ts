@@ -45,12 +45,13 @@ export class StudentsService {
     const cleanedFilters = cleanFilters(filters as unknown as Filters);
     const { courseId, subjectId, date } = addDateRange(cleanedFilters);
 
-    const studentsQuery = this.dataSource
+    let studentsQuery = this.dataSource
       .getRepository(Student)
       .createQueryBuilder('student')
       .leftJoin('student.studentToWork', 'studentToWork')
       .addSelect([
         'studentToWork.workId',
+        'studentToWork.studentId',
         'studentToWork.observation',
         'studentToWork.onTime',
         'studentToWork.score',
@@ -86,10 +87,31 @@ export class StudentsService {
       });
     }
 
-    return await studentsQuery
+    let students = await studentsQuery
       .orderBy('student.lastname', 'ASC')
       .cache(true)
       .getMany();
+
+    if (date?._value?.length > 0 && students.length === 0) {
+      studentsQuery = this.dataSource
+        .getRepository(Student)
+        .createQueryBuilder('student');
+
+      if (courseId) {
+        studentsQuery.andWhere('student.courseId = :courseId', {
+          courseId,
+        });
+      }
+
+      students = await studentsQuery
+        .orderBy('student.lastname', 'ASC')
+        .cache(true)
+        .getMany();
+
+      students = students.map((student) => ({ ...student, studentToWork: [] }));
+    }
+
+    return students;
   }
 
   async findOne(id: number): Promise<Student> {

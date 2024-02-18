@@ -24,7 +24,7 @@ export class StudentToWork {
   @Column({ name: 'on_time', nullable: true, default: false })
   public onTime: boolean;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({ type: 'decimal', nullable: true, default: null })
   public score: number;
 
   @Column({ nullable: true, default: 17 })
